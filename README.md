@@ -8,18 +8,6 @@ A multi-agent system that automates stages of a penetration test against a contr
 
 ## Architecture
 
-```
-main.py
-  └── Orchestrator (Agent 1)
-        ├── Recon Agent (Agent 2)        ← passive + active recon via LLM tool use
-        │     ├── tool: run_whois        ← passive
-        │     ├── tool: run_dns_lookup   ← passive
-        │     ├── tool: run_nmap         ← active
-        │     └── tool: run_curl         ← active
-        ├── Vulnerability Analyst (Agent 3)   ← maps findings to CVE/CWE categories
-        └── Report Writer (Agent 4)           ← generates structured pen-test report
-```
-
 **Pipeline pattern:** each agent receives the shared state dict, enriches it, and passes it forward. No outputs are hard-coded or copy-pasted between agents.
 
 **LLM backend:** Anthropic Claude (`claude-haiku-4-5`) via the Anthropic Python SDK. Uses tool use / function calling for the recon agent and structured JSON output for all agents.
@@ -149,28 +137,6 @@ If the target is outside the defined scope, the orchestrator rejects it immediat
 - Output matches the structure expected in the Agent-Generated Pen-Test Report deliverable
 
 ---
-
-## Project Structure
-
-```
-agentp/
-├── agents/
-│   ├── orchestrator.py       # Agent 1
-│   ├── recon_agent.py        # Agent 2
-│   ├── vuln_agent.py         # Agent 3
-│   └── report_agent.py       # Agent 4
-├── tools/
-│   ├── scanner.py            # nmap wrapper
-│   ├── http_probe.py         # curl wrapper
-│   ├── whois_probe.py        # whois wrapper
-│   └── dns_probe.py          # DNS lookup
-├── outputs/                  # generated at runtime
-├── logs/                     # generated at runtime
-├── logger.py                 # LLM call logger
-├── main.py                   # entrypoint
-├── requirements.txt
-└── .env                      # not committed — add your API key here
-```
 
 ---
 
